@@ -4,21 +4,212 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Arete Robotics</title>
-<link rel="stylesheet" href="style.css">
+<meta name="description" content="Arete Robotics turns everyday human work into data robots can learn from: hand motion, language and the 3D spaces where it happens.">
 <link rel="icon" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e0e0f; --paper: #f4f3f1; --stone: #d9d7d3; --mute: #8a8884;
+  --on-dark: #f5f4f2; --on-dark-mute: rgba(245,244,242,.9);
+  --pill: rgba(255,255,255,.16); --pill-dark: rgba(14,14,15,.82);
+  --gutter: 16px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Inter Tight", system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+
+/* nav */
+.nav { position: fixed; inset: 0 0 auto 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(var(--gutter), 6vw, 96px); color: var(--on-dark); transition: background .3s, color .3s; }
+.nav.solid { background: rgba(244,243,241,.86); color: var(--ink); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .32em; font-size: 13px; }
+.brand img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; }
+.links { display: flex; gap: 34px; font-size: 12px; font-weight: 500; letter-spacing: .14em; }
+.links a { opacity: .85; } .links a:hover { opacity: 1; }
+.cta { font-size: 12px; font-weight: 600; letter-spacing: .14em; padding: 9px 18px; border-radius: 999px; background: var(--pill); backdrop-filter: blur(8px); }
+.nav.solid .cta { background: var(--ink); color: var(--paper); }
+
+/* full-bleed panels */
+.panel { position: relative; min-height: 100svh; display: grid; place-items: end center; overflow: hidden; color: var(--on-dark); background: #1a1a1b; }
+.panel > video, .panel > img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,10,11,.5) 0%, rgba(10,10,11,.3) 30%, rgba(10,10,11,.86) 100%); }
+.panel:not(.light) .copy { text-shadow: 0 2px 24px rgba(0,0,0,.45); }
+.panel:not(.light) .copy::before { content: ""; position: absolute; inset: -12% -18% 0; z-index: -1; background: radial-gradient(closest-side, rgba(8,8,9,.62), rgba(8,8,9,0)); }
+.panel.light { background: var(--stone); color: var(--ink); }
+.panel.light::after { background: linear-gradient(180deg, rgba(217,215,211,0) 40%, rgba(217,215,211,.92) 100%); }
+.copy { position: relative; z-index: 1; text-align: center; padding: 0 var(--gutter) clamp(56px, 11vh, 120px); max-width: 980px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; margin: 0 0 14px; opacity: .9; }
+h1, h2 { font-weight: 600; letter-spacing: -.035em; line-height: .98; margin: 0; }
+h1 { font-size: clamp(44px, 8vw, 104px); }
+h2 { font-size: clamp(40px, 6.4vw, 84px); }
+.lede { font-size: clamp(16px, 1.6vw, 19px); line-height: 1.45; font-weight: 500; margin: 18px auto 0; max-width: 640px; color: var(--on-dark-mute); }
+.light .lede { color: #3b3a38; }
+.actions { display: flex; gap: 14px; justify-content: center; align-items: center; margin-top: 30px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600; padding: 12px 20px; border-radius: 999px; }
+.btn.ghost { padding-inline: 8px; }
+.btn.fill { background: var(--pill); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.light .btn.fill { background: var(--pill-dark); color: var(--paper); }
+.btn:hover .arr { transform: translateX(3px); } .arr { transition: transform .2s; }
+.actions.left { justify-content: flex-start; }
+.stats { display: flex; gap: clamp(20px, 5vw, 64px); justify-content: center; margin-top: 30px; flex-wrap: wrap; }
+.stats div { text-align: center; } .stats b { display: block; font-size: clamp(26px, 3.4vw, 40px); font-weight: 600; letter-spacing: -.03em; }
+.stats span { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+
+/* company */
+.company { background: var(--paper); padding: clamp(80px, 14vh, 160px) var(--gutter); }
+.company .inner { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: 220px 1fr; gap: clamp(28px, 6vw, 80px); align-items: center; }
+.company img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 28px; filter: grayscale(.15); }
+.company h2 { font-size: clamp(32px, 4.4vw, 56px); }
+.company p { font-size: 18px; line-height: 1.55; color: #3b3a38; margin: 18px 0 0; }
+.greek { font-style: italic; color: var(--mute); }
+
+/* news */
+.news { background: #fff; padding: clamp(72px, 12vh, 128px) 0 clamp(64px, 10vh, 104px); }
+.news header { text-align: center; padding: 0 var(--gutter); }
+.news header p { font-size: 17px; font-weight: 600; margin: 10px auto 0; max-width: 360px; line-height: 1.35; }
+.cards { display: grid; grid-auto-flow: column; grid-auto-columns: min(330px, 82vw); gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 44px max(var(--gutter), calc((100vw - 1060px) / 2)) 8px; scrollbar-width: none; }
+.cards::-webkit-scrollbar { display: none; }
+.card { scroll-snap-align: start; background: #f2f2f1; border-radius: 22px; overflow: hidden; display: flex; flex-direction: column; }
+.card img { width: 100%; aspect-ratio: 2 / 1; object-fit: cover; filter: grayscale(1) contrast(1.05); transition: filter .3s; }
+.card:hover img { filter: grayscale(0); }
+.card .meta { display: flex; justify-content: space-between; font-size: 13px; color: #55534f; padding: 16px 18px 0; }
+.card h3 { font-size: 16px; font-weight: 600; line-height: 1.32; margin: 10px 18px 22px; letter-spacing: -.01em; }
+
+/* footer */
+footer { background: #121212; color: #e9e8e6; padding: 52px clamp(var(--gutter), 6vw, 96px); display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; align-items: center; font-size: 13px; }
+footer .left { line-height: 1.7; } footer .left a:hover, footer .right a:hover { text-decoration: underline; }
+footer .mail { font-weight: 600; letter-spacing: .04em; }
+footer .right { display: flex; gap: 22px; justify-content: flex-end; }
+footer small { grid-column: 1 / -1; color: #85837f; font-size: 11px; }
+
+@media (max-width: 760px) {
+  .links { display: none; }
+  .company .inner { grid-template-columns: 1fr; text-align: center; }
+  .company img { width: 160px; margin: 0 auto; }
+  .actions.left { justify-content: center; }
+  footer { grid-template-columns: 1fr; text-align: center; }
+  footer .right { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
 </head>
 <body>
-<main>
-<h1>Arete Robotics</h1>
-<p class="muted">Small, private browser tools. No accounts, no tracking.</p>
-<table>
-<tr><th>Extension</th><th>What it does</th><th></th></tr>
-<tr><td>Quietbit Scan</td><td>3D scanning with the iPhone and iPad LiDAR scanner, with export to USDZ, GLB, OBJ, PLY, STL and robot simulation scenes.</td><td><a href="scan/index.html">Support</a> · <a href="scan/privacy.html">Privacy</a></td></tr>
-<tr><td>VenueLens</td><td>CCF and ICORE ranks next to every paper on Google Scholar, dblp, PubMed and arXiv.</td><td><a href="venuelens/privacy.html">Privacy</a></td></tr>
-<tr><td>SureRec</td><td>Screen recorder that saves to disk as you record, so a crash never loses your video.</td><td><a href="surerec/privacy.html">Privacy</a></td></tr>
-</table>
-<p class="muted">Contact: <a href="mailto:chizkiyahuohayon@gmail.com">chizkiyahuohayon@gmail.com</a></p>
-</main>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="#top"><img src="media/lion.jpg" alt="">ARETE</a>
+  <div class="links">
+    <a href="#data">DATA</a><a href="#scan">SIMULATION</a><a href="#code">OPEN SOURCE</a><a href="#company">COMPANY</a>
+  </div>
+  <a class="cta" href="mailto:hello@arete-robotics.com">CONTACT</a>
+</nav>
+
+<section class="panel" id="top">
+  <video autoplay muted loop playsinline poster="media/hero.jpg"><source src="media/hero.mp4" type="video/mp4"></video>
+  <div class="copy">
+    <p class="eyebrow">Arete Robotics</p>
+    <h1>Robots that learn from people</h1>
+    <p class="lede">We turn everyday human work into data robots can learn from: hand motion, language, and the 3D spaces where it happens.</p>
+    <div class="actions">
+      <a class="btn ghost" href="#data">Our work <span class="arr">↓</span></a>
+      <a class="btn fill" href="mailto:hello@arete-robotics.com">Get in touch <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="data">
+  <video autoplay muted loop playsinline poster="media/hands.jpg"><source src="media/hands.mp4" type="video/mp4"></video>
+  <div class="copy">
+    <p class="eyebrow">Open dataset</p>
+    <h2>Egocentric-10K Actions</h2>
+    <p class="lede">Real factory work seen through workers' eyes, labelled automatically with 3D hand poses, wrist actions and language, with a benchmark for predicting where a hand goes next.</p>
+    <div class="stats">
+      <div><b>648</b><span>episodes</span></div>
+      <div><b>30</b><span>factories</span></div>
+      <div><b>116k</b><span>labelled frames</span></div>
+    </div>
+    <div class="actions">
+      <a class="btn ghost" href="https://huggingface.co/datasets/arete-robotics/egocentric-10k-actions#benchmark-where-will-the-hand-be-in-one-second">Benchmark <span class="arr">→</span></a>
+      <a class="btn fill" href="https://huggingface.co/datasets/arete-robotics/egocentric-10k-actions">Hugging Face <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="panel light" id="scan">
+  <img class="bg" src="media/scan.jpg" alt="A room scanned with an iPhone, shown as a grey 3D model">
+  <div class="copy">
+    <p class="eyebrow">Real2Sim</p>
+    <h2>Arete Scan</h2>
+    <p class="lede">Scan a room with the LiDAR on your iPhone. Export it to MuJoCo or Isaac Sim with collision shapes, ready for robots. Coming soon to the App Store.</p>
+    <div class="actions">
+      <a class="btn ghost" href="scan/privacy.html">Privacy <span class="arr">→</span></a>
+      <a class="btn fill" href="scan/index.html">Learn more <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="panel" id="code">
+  <img class="bg" src="media/grid.jpg" alt="Six factory videos with hand keypoints and task labels produced by ego2lerobot">
+  <div class="copy">
+    <p class="eyebrow">Open source</p>
+    <h2>ego2lerobot</h2>
+    <p class="lede">Turn any first-person video into a LeRobot dataset on a laptop: hand tracking, 3D wrist actions, segmentation and language. Apache 2.0.</p>
+    <div class="actions">
+      <a class="btn fill" href="https://github.com/arete-robotics/ego2lerobot">GitHub <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="company" id="company">
+  <div class="inner">
+    <img src="media/lion.jpg" alt="A lion resting its head on a green ball">
+    <div>
+      <p class="eyebrow" style="color:var(--mute)">Company</p>
+      <h2>Excellence, practised.</h2>
+      <p><span class="greek">Aretē (ἀρετή)</span> is the Greek word for excellence that comes from doing a thing well, again and again. Arete Robotics was founded in Dublin in 2026 to build the data and tools that let robots learn the way people do: by watching skilled work.</p>
+      <p>We label first-person video for robot learning, from public datasets or your own footage. Send us a few minutes and we will label it for free so you can judge the quality.</p>
+      <div class="actions left">
+        <a class="btn" style="background:var(--ink);color:var(--paper)" href="mailto:hello@arete-robotics.com">hello@arete-robotics.com <span class="arr">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="news">
+  <header>
+    <p class="eyebrow">Latest</p>
+    <p>What we have shipped so far.</p>
+  </header>
+  <div class="cards">
+    <a class="card" href="https://huggingface.co/datasets/arete-robotics/egocentric-10k-actions"><img src="media/hands.jpg" alt=""><div class="meta"><span>October 15, 2026</span><span>Dataset</span></div><h3>Egocentric-10K Actions 2.0: 648 episodes, factory-level splits and a forecasting benchmark</h3></a>
+    <a class="card" href="scan/index.html"><img src="media/sim.jpg" alt=""><div class="meta"><span>October 15, 2026</span><span>App</span></div><h3>Arete Scan submitted to the App Store, with MuJoCo and Isaac Sim export</h3></a>
+    <a class="card" href="https://github.com/arete-robotics/ego2lerobot"><img src="media/grid.jpg" alt=""><div class="meta"><span>October 12, 2026</span><span>Open source</span></div><h3>ego2lerobot 0.1.0: first-person video to LeRobot datasets</h3></a>
+    <a class="card" href="https://huggingface.co/datasets/arete-robotics/egocentric-10k-actions-sample"><img src="media/hero.jpg" alt=""><div class="meta"><span>October 12, 2026</span><span>Dataset</span></div><h3>A free 41-minute sample of labelled factory work</h3></a>
+  </div>
+</section>
+
+<footer>
+  <div class="left">
+    Arete Robotics © 2026<br>
+    Privacy: <a href="scan/privacy.html">Arete Scan</a> · <a href="venuelens/privacy.html">VenueLens</a> · <a href="surerec/privacy.html">SureRec</a>
+  </div>
+  <a class="mail" href="mailto:hello@arete-robotics.com">hello@arete-robotics.com</a>
+  <div class="right">
+    <a href="https://github.com/arete-robotics">GitHub</a>
+    <a href="https://huggingface.co/arete-robotics">Hugging Face</a>
+  </div>
+  <small>Factory footage from Egocentric-10K by Build AI (Apache 2.0).</small>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+const onScroll = () => {
+  const dark = [...document.querySelectorAll('.panel:not(.light)')].some(p => { const r = p.getBoundingClientRect(); return r.top <= 40 && r.bottom > 40; });
+  nav.classList.toggle('solid', !dark);
+};
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+</script>
 </body>
 </html>
