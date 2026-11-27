@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How far off is hand depth from one head camera? | Arete Robotics</title>
+<meta name="description" content="We placed hands in 3D from one head camera and compared them with stereo triangulation on the same 15,371 hand frames. The median wrist depth error is 53.5 mm.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<meta property="og:title" content="How far off is hand depth from one head camera?">
+<meta property="og:description" content="One-camera 3D hands against stereo triangulation on the same 15,371 hand frames: the median wrist depth error is 53.5 mm.">
+<meta property="og:image" content="https://arete-robotics.com/notes/mono-vs-stereo/poster.jpg">
+<meta property="og:url" content="https://arete-robotics.com/notes/mono-vs-stereo/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0e0e0f; --paper: #f4f3f1; --stone: #d9d7d3; --mute: #8a8884;
+  --on-dark: #f5f4f2; --on-dark-mute: rgba(245,244,242,.9);
+  --pill: rgba(255,255,255,.16); --pill-dark: rgba(14,14,15,.82);
+  --gutter: 16px;
+  --body: #3b3a38; --rule: #e2e1de; --card: #f2f2f1;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Inter Tight", system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+
+.nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: 18px clamp(var(--gutter), 6vw, 96px); background: rgba(244,243,241,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .32em; font-size: 13px; text-decoration: none; }
+.brand .mark { width: 27px; height: 24px; display: block; color: var(--ink); }
+.cta { font-size: 12px; font-weight: 600; letter-spacing: .14em; padding: 9px 18px; border-radius: 999px; background: var(--ink); color: var(--paper); text-decoration: none; }
+
+header.post { max-width: 760px; margin: 0 auto; padding: clamp(56px, 10vh, 110px) var(--gutter) 28px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; margin: 0 0 14px; color: var(--mute); }
+h1, h2 { font-weight: 600; letter-spacing: -.035em; margin: 0; }
+h1 { font-size: clamp(36px, 5.6vw, 64px); line-height: 1.02; }
+h2 { font-size: clamp(24px, 2.8vw, 32px); line-height: 1.1; margin: 52px 0 14px; letter-spacing: -.025em; }
+.lede { font-size: clamp(17px, 1.7vw, 20px); line-height: 1.5; font-weight: 500; margin: 20px 0 0; color: var(--body); }
+
+article { max-width: 760px; margin: 0 auto; padding: 0 var(--gutter) 40px; }
+article p, article li { font-size: 17.5px; line-height: 1.62; color: var(--body); }
+article p { margin: 0 0 16px; }
+article ol { margin: 0 0 16px; padding-left: 24px; }
+article li { margin: 0 0 8px; }
+article strong { color: var(--ink); font-weight: 600; }
+article a { text-decoration: underline; text-underline-offset: 3px; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; background: var(--card); padding: 1px 5px; border-radius: 6px; }
+pre { background: var(--ink); color: var(--on-dark); border-radius: 16px; padding: 18px 20px; overflow-x: auto; font-size: 14px; line-height: 1.55; margin: 0 0 18px; }
+pre code { background: none; padding: 0; color: inherit; }
+
+.stats { display: flex; gap: clamp(20px, 5vw, 56px); flex-wrap: wrap; margin: 34px 0 6px; padding: 26px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.stats div { flex: 1 1 0; min-width: 140px; } .stats b { display: block; font-size: clamp(28px, 3.4vw, 40px); font-weight: 600; letter-spacing: -.03em; color: var(--ink); }
+.stats span { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #55534f; line-height: 1.4; display: block; margin-top: 4px; }
+
+figure { margin: 26px 0 30px; }
+figure img, figure video { width: 100%; display: block; border-radius: 14px; background: #fff; }
+figure img { padding: 14px; }
+figcaption { font-size: 14px; line-height: 1.5; color: #55534f; margin-top: 10px; }
+figure.wide { max-width: 1060px; margin-left: auto; margin-right: auto; padding: 0 var(--gutter); }
+
+table { width: 100%; border-collapse: collapse; margin: 8px 0 22px; font-size: 15.5px; }
+th, td { text-align: left; padding: 10px 10px 10px 0; border-top: 1px solid var(--rule); vertical-align: top; color: var(--body); }
+td.n { text-align: right; white-space: nowrap; color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+th { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #55534f; font-weight: 600; border-top: 0; }
+th.n { text-align: right; }
+
+.note { background: var(--card); border-radius: 18px; padding: 20px 22px; margin: 24px 0; }
+.note p:last-child { margin-bottom: 0; }
+
+footer { background: #121212; color: #e9e8e6; padding: 52px clamp(var(--gutter), 6vw, 96px); display: grid; grid-template-columns: 1fr auto 1fr; gap: 28px; align-items: center; font-size: 13px; margin-top: 60px; }
+footer a { color: inherit; text-decoration: none; } footer a:hover { text-decoration: underline; }
+footer .mail { font-weight: 600; letter-spacing: .04em; }
+footer .right { display: flex; gap: 22px; justify-content: flex-end; }
+footer small { grid-column: 1 / -1; color: #85837f; font-size: 11px; line-height: 1.6; }
+
+@media (max-width: 760px) {
+  footer { grid-template-columns: 1fr; text-align: center; }
+  footer .right { justify-content: center; }
+  table { font-size: 14px; }
+  figure img { padding: 6px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="../../"><svg class="mark" aria-hidden="true"><use href="../../media/alpha_symbol.svg#alpha"/></svg>ARETE</a>
+  <a class="cta" href="mailto:hello@arete-robotics.com">CONTACT</a>
+</nav>
+
+<header class="post">
+  <p class="eyebrow">Technical note · November 2026</p>
+  <h1>How far off is hand depth from one head camera?</h1>
+  <p class="lede">We placed the hands in 3D from one camera, with a standard MediaPipe-based fit, and compared them with stereo triangulation on the same 15,371 hand frames. The median wrist depth error is 53.5 mm. In 53.1% of hand frames it is more than 5 cm.</p>
+</header>
+
+<article>
+  <h2>The problem</h2>
+  <p>Most first-person hand data is filmed with one camera. One image shows where the hand is across the frame. It does not show how far away it is. Monocular methods estimate that distance from how large the hand looks, using a hand shape that a model predicts for the frame.</p>
+  <p>For robot learning, that depth goes straight into the action: wrist position, wrist velocity and grip opening. On real head-mounted footage, how far is the one-camera wrist from a measured one?</p>
+
+  <div class="stats">
+    <div><b>53.5 mm</b><span>median wrist depth error</span></div>
+    <div><b>138.7 mm</b><span>90th percentile</span></div>
+    <div><b>53.1%</b><span>of hand frames off by more than 5 cm</span></div>
+  </div>
+
+  <h2>Setup</h2>
+  <p>The footage is the public <a href="https://huggingface.co/datasets/humanola-inc/egocentric-sample">Humanola egocentric sample</a>, filmed with a head-mounted stereo pair. We use 12 minutes of it: six household and kitchen clips, 106 steps. We had already published stereo hands for these frames in <a href="https://huggingface.co/datasets/arete-robotics/stereo-hands-sample">stereo-hands-sample</a>.</p>
+  <ol>
+    <li><strong>One camera.</strong> MediaPipe finds the hands in the left view only. Our open-source pipeline, <a href="https://github.com/arete-robotics/ego2lerobot">ego2lerobot</a>, moves MediaPipe's metric hand shape until it projects onto its own keypoints. It uses the same intrinsics and lens distortion as the stereo labels.</li>
+    <li><strong>Reference.</strong> Stereo joints, only where they were triangulated in that frame.</li>
+    <li><strong>Same frames, no alignment.</strong> Each stereo hand is paired with the one-camera hand at the same place in the left image (median keypoint distance 1.93 pixels). Both are in the left camera frame, so nothing is rescaled or shifted. 15,371 of 16,423 stereo hand frames are compared.</li>
+  </ol>
+
+  <h2>Results</h2>
+  <figure>
+    <video src="https://huggingface.co/datasets/arete-robotics/mono-vs-stereo-hands/resolve/main/preview/mono_vs_stereo.mp4" poster="poster.jpg" controls muted playsinline preload="none"></video>
+    <figcaption>One 6 second window per clip, chosen by a rule. Blue: stereo. Orange: one camera. The hands line up in the left view, because the one-camera hand is fitted to it. From the right camera or from above, they do not.</figcaption>
+  </figure>
+  <p>The one-camera wrist is off in depth by 53.5 mm at the median and 138.7 mm at the 90th percentile. The wrists are 0.548 m from the camera at the median, so that is about 10.3% of the distance. Across the image the wrists agree better: 20.5 mm at the median. Most of the error is in depth.</p>
+  <p>It grows with distance: 45.2 mm at the median for wrists 0.3 to 0.4 m away, 71.2 mm at 0.6 to 0.7 m. Per clip, the median runs from 37.8 mm (cutting an apple, hands nearest the camera) to 66.4 mm (peeling and slicing cucumbers).</p>
+  <figure>
+    <img src="fig1_wrist_depth.png" alt="Left: one-camera wrist depth against stereo wrist depth, spread well beyond a 5 cm band. Right: median and 90th percentile depth error rising with distance.">
+    <figcaption>Left: every compared hand frame. Right: error by distance from the camera.</figcaption>
+  </figure>
+
+  <p><strong>Hand size explains only part of it.</strong> MediaPipe does not know the wearer. Its palm measures 80.8 mm at the median and varies from 69.6 to 90.4 mm between frames. The stereo palms measure 77.6 mm. A hand that is 10% too large is placed 10% too far. Yet rescaling each clip's hands by one measured size only brings the median error to 42.2 mm. Most of the rest is tilt. Rotated onto the stereo hand, MediaPipe's shape agrees to 14.3 mm per joint, but the rotation needed is 29.9 degrees at the median.</p>
+  <figure>
+    <img src="fig2_hand_size.png" alt="Left: per clip and hand, depth ratio follows hand size ratio only loosely. Right: a per-clip size correction shifts the error distribution a little.">
+    <figcaption>Left: medians per clip and hand. Right: with and without a per-clip size correction.</figcaption>
+  </figure>
+
+  <p><strong>Robot actions.</strong></p>
+  <table>
+    <tr><th>Wrist motion</th><th class="n">One camera</th><th class="n">Stereo</th></tr>
+    <tr><td>Speed of the hand, median</td><td class="n"></td><td class="n">0.093 m/s</td></tr>
+    <tr><td>Velocity error against stereo, median</td><td class="n">0.215 m/s</td><td class="n"></td></tr>
+    <tr><td>Direction off by over 30 degrees, hand faster than 0.1 m/s</td><td class="n">64.2%</td><td class="n"></td></tr>
+    <tr><td>Frame to frame acceleration, median, unsmoothed</td><td class="n">7.67 m/s²</td><td class="n">2.27 m/s²</td></tr>
+  </table>
+  <p>The velocity error is larger than the typical speed of the hand. Smoothing over 0.33 s only brings it to 0.179 m/s.</p>
+  <p>The grip holds up better. The thumb to index distance is 9.7 mm from stereo at the median, with no bias. Grasp and release events disagree, though: 301 on the stereo hands, 192 on the one-camera hands, 64 matching within 0.33 s. We cannot say which is right. Fingertips are often hidden from one camera, and unsmoothed stereo grip is the noisier signal.</p>
+  <figure>
+    <img src="fig3_example_step.png" alt="One step over time: one-camera wrist depth wanders around the stereo depth, its speed spikes, and grip roughly follows.">
+    <figcaption>A typical step. Its median depth error, 52.9 mm, is close to the overall one.</figcaption>
+  </figure>
+
+  <div class="note">
+    <p><strong>Is the stereo reference right?</strong> It is a measurement, not ground truth. Humanola publishes its own 3D hand tracking for these frames. Against it, the one-camera wrist depth differs by 46.0 mm at the median and our stereo wrist depth by 21.1 mm. Part of our calibration was measured from the footage itself.</p>
+  </div>
+
+  <h2>If you buy hand data</h2>
+  <ol>
+    <li>Ask whether depth was measured or estimated. From one camera, our median error was 53.5 mm for hands about half a metre away, and more further out.</li>
+    <li>Expect wrist velocities to carry that error. Smoothing does not remove most of it.</li>
+    <li>Ask for a per-frame flag that says which values were measured and which were filled.</li>
+    <li>Check grasp events on their own. Here the two methods agreed on few of them.</li>
+  </ol>
+  <p>One camera does give a hand where stereo gives none, for example when only one camera sees it. Those frames are not in these numbers.</p>
+
+  <h2>Limits</h2>
+  <p>Twelve minutes, six clips, one camera rig, one monocular method (ego2lerobot's, built on MediaPipe). Other single-view models may do better or worse. Our per-frame stereo joints can test them on the same frames.</p>
+
+  <h2>Reproduce it</h2>
+  <p>The per-frame hands, the results and the scripts are in <a href="https://huggingface.co/datasets/arete-robotics/mono-vs-stereo-hands">arete-robotics/mono-vs-stereo-hands</a>. One command downloads the public inputs and rebuilds every number and figure:</p>
+<pre><code>pip install "ego2lerobot @ git+https://github.com/arete-robotics/ego2lerobot" matplotlib huggingface_hub
+bash bench/run.sh</code></pre>
+  <p>To run the same comparison on your own footage, write to <a href="mailto:hello@arete-robotics.com">hello@arete-robotics.com</a>.</p>
+</article>
+
+<footer>
+  <div class="left">Arete Robotics © 2026</div>
+  <a class="mail" href="mailto:hello@arete-robotics.com">hello@arete-robotics.com</a>
+  <div class="right">
+    <a href="https://github.com/arete-robotics">GitHub</a>
+    <a href="https://huggingface.co/arete-robotics">Hugging Face</a>
+  </div>
+  <small>Video from the Humanola Egocentric Hand-Pose Dataset, Sample Delivery, by Humanola Inc. (CC BY 4.0). Stereo labels, one-camera labels, figures and video edits by Arete Robotics.</small>
+</footer>
+</body>
+</html>
